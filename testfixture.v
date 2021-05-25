@@ -1,4 +1,6 @@
+
 `timescale 1ns/10ps
+`include "MFE.v"
 `define CYCLE      25.0          	  // Modify your clock period here
 `define End_CYCLE  100000000              // Modify cycle times once your design need more cycle times!
 `define PAT         "img.dat"

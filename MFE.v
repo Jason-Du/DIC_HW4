@@ -26,6 +26,7 @@ module MFE(clk,reset,busy,ready,iaddr,idata,data_rd,data_wr,addr,wen);
 	localparam SORTING=2'b10;
 	localparam DONE=2'b11;
 	reg       clear_C0;
+	reg ready_out;
 	wire [13:0]count_C0;
 	reg       keep_C0;
 	wire [7:0] value_1_1_B0;
@@ -44,6 +45,7 @@ counter C0(
 	.clear(clear_C0),
 	.keep(keep_C0)
 );
+reg start_B0;
 bubble_sort B0(
 	.clk(clk),
 	.rst(reset),
@@ -88,10 +90,12 @@ assign addr=count_C0;
 		if(reset)
 		begin
 			CS<=3'd0;
+			ready_out<=1'd0;
 		end
 		else
 		begin
 			CS<=NS;
+			ready_out<=ready;
 		end
 	
 	end
@@ -107,24 +111,27 @@ assign addr=count_C0;
 					start_S0=1'b0;
 					clear_C0=1'b1;
 					keep_C0=1'b0;
+					busy=1'b0;
 				end
 				else
 				begin
 					clear_C0=1'b0;
 					keep_C0=1'b1;
-					if(ready)
+					if(ready_out)
 					begin
 						NS=STORING;
 						start_S0=1'b1;
+						busy=1'b1;
 					end
 					else
 					begin
 						NS=IDLE;
 						start_S0=1'b0;
+						busy=1'b0;
 					end
 				end
 				wen=1'b0;
-				busy=1'b1;
+				start_B0=1'd0;
 			end
 			STORING:
 			begin
@@ -133,6 +140,8 @@ assign addr=count_C0;
 				busy=1'b1;
 				clear_C0=1'b0;
 				keep_C0=1'b1;
+				start_B0=1'd0;
+				wen=1'b0;
 			end
 			SORTING:
 			begin
@@ -142,6 +151,7 @@ assign addr=count_C0;
 				busy=1'b1;
 				clear_C0=1'b0;
 				keep_C0=finish_B0?1'b0:1'b1;
+				start_B0=1'd1;
 			end
 			DONE:
 			begin
@@ -151,6 +161,7 @@ assign addr=count_C0;
 				busy=1'b0;
 				clear_C0=1'b1;
 				keep_C0=1'b0;
+				start_B0=1'd0;
 			end
 		endcase
 	end

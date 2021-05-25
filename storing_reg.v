@@ -77,6 +77,18 @@ begin
 	end
 
 end
+always@(posedge clk or posedge rst)
+begin
+	if(rst)
+	begin
+		CS<=4'd0;
+	end
+	else
+	begin
+		CS<=NS;
+	end
+end
+
 localparam IDLE   =4'b0000;
 localparam POINT_1=4'b0001;
 localparam POINT_2=4'b0010;
@@ -88,13 +100,13 @@ localparam POINT_7=4'b0111;
 localparam POINT_8=4'b1000;
 localparam POINT_9=4'b1001;
 localparam LAST   =4'b1010;
-assign row_1={1'b0,start_addr[ 6:0]};
-assign col_1={1'b0,start_addr[13:7]};
+assign row_1={1'b0,start_addr[13:7]};
+assign col_1={1'b0,start_addr[6:0]};
 
-assign row_2={1'b0,start_addr[ 6:0]+8'd1};
-assign col_2={1'b0,start_addr[13:7]+8'd1};
-assign row_3={1'b0,start_addr[ 6:0]+8'd2};
-assign col_3={1'b0,start_addr[13:7]+8'd2};
+assign row_2={1'b0,start_addr[13:7]}+8'd1;
+assign col_2={1'b0,start_addr[6:0]}+8'd1;
+assign row_3={1'b0,start_addr[13:7]}+8'd2;
+assign col_3={1'b0,start_addr[6:0]}+8'd2;
 
 assign get_1_1_addr={row_1,col_1};
 assign get_1_2_addr={row_1,col_2};
@@ -107,7 +119,7 @@ assign get_3_2_addr={row_3,col_2};
 assign get_3_3_addr={row_3,col_3};
 
 
-assign addr={row_[7:0],col_[7:0]};
+assign addr={row_[6:0],col_[6:0]};
 
 assign finish=(CS==LAST)?1'b1:1'b0;
 always@(*)
@@ -120,72 +132,72 @@ begin
 		IDLE:
 		begin
 			NS  =start?POINT_1:IDLE;
+			row_=8'd0;
+			col_=8'd0;
 			//addr=start?start_addr:8'd0;
-			row_=start?start_addr[15:8]:get_1_1_addr[15:8]-8'd1;
-			col_=start?start_addr[15:8]:get_1_1_addr[7:0]-8'd1;
 			localreg_in[0]=14'd0;
 		end
 		POINT_1:
 		begin
 			NS=POINT_2;
-			row_=get_1_2_addr[15:8]-8'd1;
-			col_=get_1_2_addr[7:0]-8'd1;
+			row_=get_1_1_addr[15:8]-8'd1;
+			col_=get_1_1_addr[7:0]-8'd1;
 			localreg_in[0]=(get_1_1_addr[7:0]==8'd0||get_1_1_addr[15:8]==8'd0||get_1_1_addr[7:0]==8'd129||get_1_1_addr[15:8]==8'd129)?8'd0:data_in;
 		end
 		POINT_2:
 		begin
 			NS=POINT_3;
-			row_=get_1_3_addr[15:8]-8'd1;
-			col_=get_1_3_addr[7:0]-8'd1;
+			row_=get_1_2_addr[15:8]-8'd1;
+			col_=get_1_2_addr[7:0]-8'd1;
 			localreg_in[0]=(get_1_2_addr[7:0]==8'd0||get_1_2_addr[15:8]==8'd0||get_1_2_addr[7:0]==8'd129||get_1_2_addr[15:8]==8'd129)?8'd0:data_in;
 		end
 		POINT_3:
 		begin
 			NS=POINT_4;
-			row_=get_2_1_addr[15:8]-8'd1;
-			col_=get_2_1_addr[7:0]-8'd1;
+			row_=get_1_3_addr[15:8]-8'd1;
+			col_=get_1_3_addr[7:0]-8'd1;
 			localreg_in[0]=(get_1_3_addr[7:0]==8'd0||get_1_3_addr[15:8]==8'd0||get_1_3_addr[7:0]==8'd129||get_1_3_addr[15:8]==8'd129)?8'd0:data_in;
 		end
 		POINT_4:
 		begin
 			NS=POINT_5;
-			row_=get_2_2_addr[15:8]-8'd1;
-			col_=get_2_2_addr[7:0]-8'd1;
+			row_=get_2_1_addr[15:8]-8'd1;
+			col_=get_2_1_addr[7:0]-8'd1;
 			localreg_in[0]=(get_2_1_addr[7:0]==8'd0||get_2_1_addr[15:8]==8'd0||get_2_1_addr[7:0]==8'd129||get_2_1_addr[15:8]==8'd129)?8'd0:data_in;
 		end
 		POINT_5:
 		begin
 			NS=POINT_6;
-			row_=get_2_3_addr[15:8]-8'd1;
-			col_=get_2_3_addr[7:0]-8'd1;
+			row_=get_2_2_addr[15:8]-8'd1;
+			col_=get_2_2_addr[7:0]-8'd1;
 			localreg_in[0]=(get_2_2_addr[7:0]==8'd0||get_2_2_addr[15:8]==8'd0||get_2_2_addr[7:0]==8'd129||get_2_2_addr[15:8]==8'd129)?8'd0:data_in;
 		end
 		POINT_6:
 		begin
 			NS=POINT_7;
-			row_=get_3_1_addr[15:8]-8'd1;
-			col_=get_3_1_addr[7:0]-8'd1;
+			row_=get_2_3_addr[15:8]-8'd1;
+			col_=get_2_3_addr[7:0]-8'd1;
 			localreg_in[0]=(get_2_3_addr[7:0]==8'd0||get_2_3_addr[15:8]==8'd0||get_2_3_addr[7:0]==8'd129||get_2_3_addr[15:8]==8'd129)?8'd0:data_in;
 		end
 		POINT_7:
 		begin
 			NS=POINT_8;
-			row_=get_3_2_addr[15:8]-8'd1;
-			col_=get_3_2_addr[7:0]-8'd1;
+			row_=get_3_1_addr[15:8]-8'd1;
+			col_=get_3_1_addr[7:0]-8'd1;
 			localreg_in[0]=(get_3_1_addr[7:0]==8'd0||get_3_1_addr[15:8]==8'd0||get_3_1_addr[7:0]==8'd129||get_3_1_addr[15:8]==8'd129)?8'd0:data_in;
 		end
 		POINT_8:
 		begin
 			NS=POINT_9;
-			row_=get_3_3_addr[15:8]-8'd1;
-			col_=get_3_3_addr[7:0]-8'd1;
+			row_=get_3_2_addr[15:8]-8'd1;
+			col_=get_3_2_addr[7:0]-8'd1;
 			localreg_in[0]=(get_3_2_addr[7:0]==8'd0||get_3_2_addr[15:8]==8'd0||get_3_2_addr[7:0]==8'd129||get_3_2_addr[15:8]==8'd129)?8'd0:data_in;
 		end
 		POINT_9:
 		begin
 			NS=LAST;
-			row_=8'd0;
-			col_=8'd0;
+			row_=get_3_3_addr[15:8]-8'd1;
+			col_=get_3_3_addr[7:0]-8'd1;
 			localreg_in[0]=(get_3_3_addr[7:0]==8'd0||get_3_3_addr[15:8]==8'd0||get_3_3_addr[7:0]==8'd129||get_3_3_addr[15:8]==8'd129)?8'd0:data_in;
 		end
 		LAST:
