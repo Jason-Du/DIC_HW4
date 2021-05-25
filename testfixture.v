@@ -43,6 +43,15 @@ module testfixture;
 		reset = 1'b1;
    	    #(`CYCLE*2);  #1;   reset = 1'b0;  
     end
+	initial
+begin
+	$fsdbDumpfile("top.fsdb");
+	$fsdbDumpvars("+struct", "+mda",u_mfe);
+	//$fsdbDumpvars(0,TOP);
+	//Simulation Limitation
+	#(`CYCLE*`End_CYCLE);
+	$finish;
+end
 	initial begin
 		wait(busy == 0); @(negedge clk); #1;  ready = 1'b1;
 		 wait(busy == 1);#(`CYCLE/4); ready = 1'b0;
