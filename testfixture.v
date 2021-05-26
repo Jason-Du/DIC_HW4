@@ -1,6 +1,6 @@
 
 `timescale 1ns/10ps
-`include "MFE.v"
+//`include "MFE.v"
 `define CYCLE      25.0          	  // Modify your clock period here
 `define End_CYCLE  100000000              // Modify cycle times once your design need more cycle times!
 `define PAT         "img.dat"
@@ -45,6 +45,7 @@ module testfixture;
 		reset = 1'b1;
    	    #(`CYCLE*2);  #1;   reset = 1'b0;  
     end
+	/*
 	initial
 begin
 	$fsdbDumpfile("top.fsdb");
@@ -54,6 +55,7 @@ begin
 	#(`CYCLE*`End_CYCLE);
 	$finish;
 end
+*/
 	initial begin
 		wait(busy == 0); @(negedge clk); #1;  ready = 1'b1;
 		 wait(busy == 1);#(`CYCLE/4); ready = 1'b0;

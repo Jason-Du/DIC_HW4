@@ -135,7 +135,7 @@ begin
 			row_=8'd0;
 			col_=8'd0;
 			//addr=start?start_addr:8'd0;
-			localreg_in[0]=14'd0;
+			localreg_in[0]=8'd0;
 		end
 		POINT_1:
 		begin

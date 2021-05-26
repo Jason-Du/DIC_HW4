@@ -1,8 +1,8 @@
 
 `timescale 1ns/10ps
-`include "counter.v"
-`include "storing_reg.v"
-`include "bubble_sort.v"
+//`include "counter.v"
+//`include "storing_reg.v"
+//`include "bubble_sort.v"
 module MFE(clk,reset,busy,ready,iaddr,idata,data_rd,data_wr,addr,wen);
 	input				clk;
 	input				reset;
@@ -46,6 +46,7 @@ counter C0(
 	.keep(keep_C0)
 );
 reg start_B0;
+wire finish_B0;
 bubble_sort B0(
 	.clk(clk),
 	.rst(reset),
