@@ -28,7 +28,7 @@ module counter(
 	begin
 		if(clear)
 		begin
-			count_in=3'd0;
+			count_in=14'd0;
 		end
 		else if(keep)
 		begin
@@ -36,6 +36,7 @@ module counter(
 		end
 		else
 		begin
-			count_in=count14'd1;
+			count_in=count+14'd1;
 		end
 	end
+endmodule
