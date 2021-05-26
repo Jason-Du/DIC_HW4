@@ -16,7 +16,7 @@ module counter(
 		if(rst)
 		
 		begin
-			count<=3'd0;
+			count<=14'd0;
 		end
 		else
 		begin
@@ -36,7 +36,6 @@ module counter(
 		end
 		else
 		begin
-			count_in=count+3'd1;
+			count_in=count14'd1;
 		end
 	end
-endmodule

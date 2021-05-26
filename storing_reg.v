@@ -58,6 +58,7 @@ reg [7:0] col_;
 reg [7:0] row_;
 reg [3:0] CS;
 reg [3:0] NS;
+reg [13:0] start_addr_out;
 integer i;
 always@(posedge clk or posedge rst)
 begin
@@ -67,12 +68,14 @@ begin
 		begin
 			localreg_out[i]<=8'd0;
 		end
+			start_addr_out<=14'd0;
 	end
 	else
 	begin
 		for(i=0;i<9;i=i+1)
 		begin
 			localreg_out[i]<=localreg_in[i];
+			start_addr_out<=start_addr;
 		end
 	end
 
@@ -100,13 +103,13 @@ localparam POINT_7=4'b0111;
 localparam POINT_8=4'b1000;
 localparam POINT_9=4'b1001;
 localparam LAST   =4'b1010;
-assign row_1={1'b0,start_addr[13:7]};
-assign col_1={1'b0,start_addr[6:0]};
+assign row_1={1'b0,start_addr_out[13:7]};
+assign col_1={1'b0,start_addr_out[6:0]};
 
-assign row_2={1'b0,start_addr[13:7]}+8'd1;
-assign col_2={1'b0,start_addr[6:0]}+8'd1;
-assign row_3={1'b0,start_addr[13:7]}+8'd2;
-assign col_3={1'b0,start_addr[6:0]}+8'd2;
+assign row_2={1'b0,start_addr_out[13:7]}+8'd1;
+assign col_2={1'b0,start_addr_out[6:0]}+8'd1;
+assign row_3={1'b0,start_addr_out[13:7]}+8'd2;
+assign col_3={1'b0,start_addr_out[6:0]}+8'd2;
 
 assign get_1_1_addr={row_1,col_1};
 assign get_1_2_addr={row_1,col_2};
@@ -134,7 +137,7 @@ begin
 			NS  =start?POINT_1:IDLE;
 			row_=8'd0;
 			col_=8'd0;
-			//addr=start?start_addr:8'd0;
+			//addr=start?start_addr_out:8'd0;
 			localreg_in[0]=8'd0;
 		end
 		POINT_1:
